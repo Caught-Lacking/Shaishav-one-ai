@@ -1,0 +1,294 @@
+/* DO NOT CHANGE */
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+/* DO NOT CHANGE */
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+    Georgia, "Times New Roman", serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shaishav One AI — Notebook theme tokens                            */
+/* Warm paper + ink, with colourful subject accents.                  */
+/* ------------------------------------------------------------------ */
+:root {
+  --radius: 0.8rem;
+  --background: oklch(0.979 0.008 92);
+  --foreground: oklch(0.255 0.028 262);
+  --card: oklch(0.999 0.002 92);
+  --card-foreground: oklch(0.255 0.028 262);
+  --popover: oklch(0.999 0.002 92);
+  --popover-foreground: oklch(0.255 0.028 262);
+  --primary: oklch(0.51 0.115 190);
+  --primary-foreground: oklch(0.99 0.005 92);
+  --secondary: oklch(0.955 0.012 92);
+  --secondary-foreground: oklch(0.3 0.03 262);
+  --muted: oklch(0.952 0.012 92);
+  --muted-foreground: oklch(0.545 0.025 262);
+  --accent: oklch(0.945 0.02 92);
+  --accent-foreground: oklch(0.3 0.03 262);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.893 0.014 92);
+  --input: oklch(0.893 0.014 92);
+  --ring: oklch(0.55 0.11 190);
+  --chart-1: oklch(0.55 0.16 262);
+  --chart-2: oklch(0.55 0.13 190);
+  --chart-3: oklch(0.62 0.17 25);
+  --chart-4: oklch(0.72 0.15 82);
+  --chart-5: oklch(0.62 0.18 330);
+  --sidebar: oklch(0.972 0.01 92);
+  --sidebar-foreground: oklch(0.3 0.03 262);
+  --sidebar-primary: oklch(0.51 0.115 190);
+  --sidebar-primary-foreground: oklch(0.99 0.005 92);
+  --sidebar-accent: oklch(0.945 0.02 92);
+  --sidebar-accent-foreground: oklch(0.3 0.03 262);
+  --sidebar-border: oklch(0.893 0.014 92);
+  --sidebar-ring: oklch(0.55 0.11 190);
+}
+
+.dark {
+  --background: oklch(0.2 0.02 262);
+  --foreground: oklch(0.955 0.01 92);
+  --card: oklch(0.255 0.022 262);
+  --card-foreground: oklch(0.955 0.01 92);
+  --popover: oklch(0.255 0.022 262);
+  --popover-foreground: oklch(0.955 0.01 92);
+  --primary: oklch(0.72 0.11 190);
+  --primary-foreground: oklch(0.18 0.03 262);
+  --secondary: oklch(0.3 0.025 262);
+  --secondary-foreground: oklch(0.955 0.01 92);
+  --muted: oklch(0.3 0.025 262);
+  --muted-foreground: oklch(0.72 0.02 92);
+  --accent: oklch(0.32 0.028 262);
+  --accent-foreground: oklch(0.955 0.01 92);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(0.36 0.025 262);
+  --input: oklch(0.36 0.025 262);
+  --ring: oklch(0.62 0.1 190);
+  --chart-1: oklch(0.62 0.16 262);
+  --chart-2: oklch(0.6 0.13 190);
+  --chart-3: oklch(0.66 0.17 25);
+  --chart-4: oklch(0.74 0.15 82);
+  --chart-5: oklch(0.66 0.18 330);
+  --sidebar: oklch(0.225 0.022 262);
+  --sidebar-foreground: oklch(0.955 0.01 92);
+  --sidebar-primary: oklch(0.72 0.11 190);
+  --sidebar-primary-foreground: oklch(0.18 0.03 262);
+  --sidebar-accent: oklch(0.3 0.025 262);
+  --sidebar-accent-foreground: oklch(0.955 0.01 92);
+  --sidebar-border: oklch(0.36 0.025 262);
+  --sidebar-ring: oklch(0.62 0.1 190);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+  button:not([disabled]),
+  [role="button"]:not([disabled]) {
+    cursor: pointer;
+  }
+  ::selection {
+    background-color: oklch(0.88 0.12 90 / 0.55);
+    color: oklch(0.25 0.03 262);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Notebook paper helpers                                              */
+/* ------------------------------------------------------------------ */
+
+/* Full-page fixed grain overlay */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+/* Ruled notebook lines */
+.ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 27px,
+    oklch(0.65 0.06 250 / 0.16) 27px,
+    oklch(0.65 0.06 250 / 0.16) 28px
+  );
+}
+
+/* Ruled lines + red margin line (classic notebook page) */
+.notebook-page {
+  position: relative;
+  background-color: oklch(0.999 0.002 92);
+  background-image:
+    linear-gradient(
+      to right,
+      transparent 0px,
+      transparent 1.1rem,
+      oklch(0.66 0.19 25 / 0.5) 1.1rem,
+      oklch(0.66 0.19 25 / 0.5) calc(1.1rem + 2px),
+      transparent calc(1.1rem + 2px)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 27px,
+      oklch(0.65 0.06 250 / 0.15) 27px,
+      oklch(0.65 0.06 250 / 0.15) 28px
+    );
+}
+
+/* Dotted paper (like graph paper margins) */
+.dotted-paper {
+  background-image: radial-gradient(
+    oklch(0.55 0.04 262 / 0.14) 1px,
+    transparent 1px
+  );
+  background-size: 18px 18px;
+}
+
+/* Notebook sheet card */
+.sheet {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow:
+    0 1px 2px oklch(0.3 0.02 262 / 0.05),
+    0 6px 20px -8px oklch(0.3 0.02 262 / 0.12);
+}
+
+/* Slightly rotated sticky-note card */
+.sticky-note {
+  position: relative;
+  border-radius: 0.35rem;
+  box-shadow: 0 4px 14px -4px oklch(0.3 0.05 70 / 0.35);
+  transform: rotate(-1.4deg);
+}
+.sticky-note::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%) rotate(2deg);
+  width: 44%;
+  height: 14px;
+  background: oklch(0.999 0.002 92 / 0.75);
+  box-shadow: 0 2px 4px oklch(0.3 0.02 262 / 0.12);
+  border-radius: 2px;
+  z-index: 1;
+}
+
+/* Highlighter mark */
+.marker {
+  background-image: linear-gradient(
+    104deg,
+    rgba(253, 224, 71, 0) 0.9%,
+    rgba(253, 224, 71, 0.6) 2.4%,
+    rgba(253, 224, 71, 0.6) 96%,
+    rgba(253, 224, 71, 0) 100%
+  );
+  padding: 0 0.12em;
+  border-radius: 0.2em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Teacher-style wavy underline */
+.scribble {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: oklch(0.68 0.16 25 / 0.65);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* Pencil margin note */
+.pencil-note {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: oklch(0.5 0.035 262 / 0.85);
+}
+
+/* Dotted divider (like paper tear-off) */
+.dotted-rule {
+  border-top: 2px dotted oklch(0.68 0.02 262 / 0.55);
+}
+
+/* Red pen correction text */
+.red-pen {
+  color: oklch(0.55 0.19 25);
+  font-weight: 600;
+}
+
+/* Display serif headings (journal feel) */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Custom scrollbar, notebook subtle */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(0.82 0.02 92);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.72 0.03 92);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
