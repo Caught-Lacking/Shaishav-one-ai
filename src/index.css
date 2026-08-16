@@ -273,6 +273,23 @@
   font-family: var(--font-display);
 }
 
+/* Splash screen rotating rings */
+@keyframes ring-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ring-spin {
+  animation: ring-spin 6s linear infinite;
+}
+.ring-spin-reverse {
+  animation: ring-spin 10s linear infinite reverse;
+}
+
 /* Custom scrollbar, notebook subtle */
 ::-webkit-scrollbar {
   width: 10px;

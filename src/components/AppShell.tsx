@@ -67,9 +67,9 @@ export function AppShell({
           <div className="flex items-center gap-6">
             <button
               type="button"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/dashboard")}
               className="cursor-pointer"
-              aria-label="Go home"
+              aria-label="Go to dashboard"
             >
               <Brand markSize="sm" />
             </button>

@@ -6,9 +6,15 @@ import type { Id } from "@/convex/_generated/dataModel";
 import { AppShell } from "@/components/AppShell";
 import { StreamPicker } from "@/components/StreamPicker";
 import { Markdown } from "@/components/Markdown";
+import { ToolPanel } from "@/components/ToolPanel";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { useAuth } from "@/hooks/use-auth";
 import { useStream } from "@/hooks/use-stream";
 import { cn } from "@/lib/utils";
@@ -31,15 +37,20 @@ import {
   Circle,
   FlaskConical,
   Layers,
+  ListChecks,
   Loader2,
   Menu,
   MessageSquareText,
+  NotebookPen,
+  PenLine,
   Send,
   Sparkles,
   Trash2,
+  Wand2,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { TOOL_DEFS, type ToolId } from "@/lib/tools";
 
 const SUBJECT_ICONS: Record<string, React.ReactNode> = {
   physics: <FlaskConical className="size-4" />,
@@ -54,6 +65,14 @@ const SUGGESTIONS = [
   "Summarise this topic into revision notes",
   "Where do students usually go wrong here?",
 ];
+
+const TOOL_ICONS: Record<ToolId, React.ReactNode> = {
+  flashcards: <Layers className="size-4" />,
+  quiz: <ListChecks className="size-4" />,
+  notes: <NotebookPen className="size-4" />,
+  essay: <PenLine className="size-4" />,
+  summarizer: <Sparkles className="size-4" />,
+};
 
 export default function Study() {
   const { user } = useAuth();
@@ -78,6 +97,7 @@ export default function Study() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [input, setInput] = useState("");
   const [activeChatId, setActiveChatId] = useState<Id<"chats"> | null>(null);
+  const [activeTool, setActiveTool] = useState<ToolId | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const streamId = (stream ?? "neet") as StreamId;
@@ -139,6 +159,11 @@ export default function Study() {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [chat?.messages.length, isGenerating]);
+
+  // a generator tool needs a selected topic
+  useEffect(() => {
+    if (!activeTopic) setActiveTool(null);
+  }, [activeTopic]);
 
   const doneMap = useMemo(() => {
     const map = new Map<string, boolean>();
@@ -230,6 +255,67 @@ export default function Study() {
             showSyllabus ? "flex" : "hidden",
           )}
         >
+          {/* study tools — collapsible generator panel */}
+          <Collapsible defaultOpen className="sheet p-3">
+            <CollapsibleTrigger className="flex w-full cursor-pointer items-center gap-2">
+              <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-rose-400 text-white">
+                <Wand2 className="size-3.5" />
+              </span>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-foreground">
+                Study tools
+              </p>
+              <ChevronDown className="ml-auto size-3.5 text-muted-foreground transition-transform data-[state=closed]:-rotate-90" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-3 space-y-1.5">
+              {TOOL_DEFS.map((t) => {
+                const disabled = !activeTopic;
+                const active = activeTool === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => setActiveTool(t.id)}
+                    title={
+                      disabled
+                        ? "Pick a chapter & topic first"
+                        : `${t.label} — ${t.description}`
+                    }
+                    className={cn(
+                      "flex w-full cursor-pointer items-center gap-2.5 rounded-lg border-2 px-2.5 py-2 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40",
+                      active
+                        ? "border-teal-300 bg-teal-50"
+                        : "border-transparent hover:bg-accent",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "flex size-7 shrink-0 items-center justify-center rounded-md text-white",
+                        t.iconBg,
+                      )}
+                    >
+                      {TOOL_ICONS[t.id]}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[13px] font-semibold leading-tight">
+                        {t.label}
+                      </span>
+                      <span className="block truncate text-[10.5px] leading-tight text-muted-foreground">
+                        {t.description}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
+              {!activeTopic && (
+                <p className="px-1 pt-1 text-[10.5px] leading-4 text-muted-foreground">
+                  Pick a chapter &amp; topic from the syllabus below to enable
+                  generators.
+                </p>
+              )}
+            </CollapsibleContent>
+          </Collapsible>
+
           {/* subject tabs */}
           <div className="sheet p-3">
             <p className="px-1 pb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
@@ -455,8 +541,24 @@ export default function Study() {
           </div>
         </aside>
 
-        {/* ============================= CHAT ============================= */}
-        <section className="sheet flex min-h-[70vh] flex-1 flex-col overflow-hidden lg:min-h-0">
+        {/* =================== GENERATOR TOOL PANEL =================== */}
+        {activeTool && activeTopic && activeChapter ? (
+          <ToolPanel
+            key={`${activeTool}-${activeTopic.id}`}
+            tool={activeTool}
+            stream={stream}
+            subjectId={effectiveSubjectId}
+            chapterId={activeChapter.id}
+            topicId={activeTopic.id}
+            topicName={activeTopic.name}
+            contextLine={`${activeSubject.name} · Class ${activeChapter.class} · ${activeChapter.name}`}
+            existingChatId={contextChat?._id ?? null}
+            onChatIdChange={(id) => setActiveChatId(id)}
+            onClose={() => setActiveTool(null)}
+          />
+        ) : (
+          /* ============================= CHAT ============================= */
+          <section className="sheet flex min-h-[70vh] flex-1 flex-col overflow-hidden lg:min-h-0">
           {/* context header */}
           <div className="flex flex-wrap items-center gap-2 border-b border-border/70 px-4 py-3">
             <button
@@ -684,6 +786,7 @@ export default function Study() {
             </p>
           </div>
         </section>
+        )}
       </div>
     </AppShell>
   );
