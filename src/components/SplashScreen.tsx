@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import shaishavLogo from "@/assets/shaishav-logo.svg";
+import shaishavLogo from "@/assets/logo.svg";
 
 /**
  * Full-screen brand splash shown for ~3 seconds on app load.
- * Deep royal-blue background with the gold Shaishav emblem, rotating
+ * Deep royal-blue background with the uploaded Shaishav logo, rotating
  * dashed rings around it, and the "SHAISHAV ONE AI" wordmark below.
  */
 export function SplashScreen() {
@@ -26,7 +26,7 @@ export function SplashScreen() {
         }}
       />
 
-      {/* rotating rings around the emblem */}
+      {/* rotating rings around the logo */}
       <div className="relative flex items-center justify-center">
         <span className="ring-spin absolute size-44 rounded-full border-2 border-dashed border-amber-300/50" />
         <span className="ring-spin-reverse absolute size-56 rounded-full border border-amber-200/30" />
@@ -37,16 +37,20 @@ export function SplashScreen() {
             animationDuration: "9s",
           }}
         />
-        <motion.img
-          src={shaishavLogo}
-          alt="Shaishav One AI"
-          width={230}
-          height={167}
+        <motion.div
           initial={{ scale: 0.86, opacity: 0.4 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.9, ease: "easeOut" }}
-          className="relative z-10 drop-shadow-[0_12px_30px_rgba(0,0,0,0.45)]"
-        />
+          className="relative z-10 rounded-[2rem] bg-white p-4 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.55)]"
+        >
+          <img
+            src={shaishavLogo}
+            alt="Shaishav One AI"
+            width={168}
+            height={168}
+            className="block size-40 object-contain sm:size-44"
+          />
+        </motion.div>
       </div>
 
       {/* wordmark below the emblem */}

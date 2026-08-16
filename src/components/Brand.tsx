@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { GraduationCap } from "lucide-react";
+import logo from "@/assets/logo.svg";
 
 export function BrandMark({
   className,
@@ -10,20 +10,18 @@ export function BrandMark({
 }) {
   const dims =
     size === "sm" ? "size-8" : size === "lg" ? "size-14" : "size-10";
-  const icon =
-    size === "sm" ? "size-4" : size === "lg" ? "size-7" : "size-5";
   return (
-    <div
+    <img
+      src={logo}
+      alt="Shaishav One AI logo"
+      width={64}
+      height={64}
       className={cn(
-        "relative flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 via-indigo-500 to-rose-500 text-white shadow-sm",
+        "shrink-0 rounded-lg object-contain shadow-sm",
         dims,
         className,
       )}
-    >
-      <GraduationCap className={cn(icon, "drop-shadow-sm")} />
-      {/* tiny pencil accent */}
-      <span className="absolute -bottom-0.5 -right-0.5 flex size-3 items-center justify-center rounded-full border-2 border-background bg-amber-400" />
-    </div>
+    />
   );
 }
 
