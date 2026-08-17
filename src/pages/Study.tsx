@@ -8,6 +8,7 @@ import { StreamPicker } from "@/components/StreamPicker";
 import { Markdown } from "@/components/Markdown";
 import { ToolPanel } from "@/components/ToolPanel";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -15,6 +16,15 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
 import { useStream } from "@/hooks/use-stream";
 import { cn } from "@/lib/utils";
@@ -26,6 +36,7 @@ import {
   getTopic,
   subjectChaptersByClass,
   type StreamId,
+  type Topic,
 } from "@/lib/curriculum";
 import {
   BookOpen,
@@ -41,8 +52,10 @@ import {
   Loader2,
   Menu,
   MessageSquareText,
+  MousePointerClick,
   NotebookPen,
   PenLine,
+  Search,
   Send,
   Sparkles,
   Trash2,
@@ -101,6 +114,7 @@ export default function Study() {
   const chatParam = searchParams.get("chat");
 
   const [showSyllabus, setShowSyllabus] = useState(false);
+  const [syllabusQuery, setSyllabusQuery] = useState("");
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
     () => new Set(chapterId ? [chapterId] : []),
   );
@@ -183,6 +197,35 @@ export default function Study() {
     return map;
   }, [progress]);
 
+  // filtered syllabus tree while searching (chapter matches show all its topics)
+  const filteredTree = useMemo(() => {
+    const q = syllabusQuery.trim().toLowerCase();
+    if (!q) return null;
+    return subjectChaptersByClass(activeSubject)
+      .map(({ cls, chapters }) => {
+        const kept = chapters
+          .map((chapter) => {
+            const chapterMatch = chapter.name.toLowerCase().includes(q);
+            const topics = chapter.topics.filter((t) =>
+              t.name.toLowerCase().includes(q),
+            );
+            return {
+              chapter,
+              topics:
+                chapterMatch && topics.length === 0 ? chapter.topics : topics,
+            };
+          })
+          .filter((row) => row.topics.length > 0);
+        return { cls, chapters: kept };
+      })
+      .filter((g) => g.chapters.length > 0);
+  }, [activeSubject, syllabusQuery]);
+
+  // reset the syllabus search whenever the subject changes
+  useEffect(() => {
+    setSyllabusQuery("");
+  }, [effectiveSubjectId]);
+
   const selectTopic = (sid: string, cid: string, tid: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("subject", sid);
@@ -193,6 +236,62 @@ export default function Study() {
     setExpandedChapters((prev) => new Set(prev).add(cid));
     setActiveChatId(null);
     setShowSyllabus(false);
+  };
+
+  const switchSubject = (sid: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("subject", sid);
+    params.delete("chapter");
+    params.delete("topic");
+    params.delete("chat");
+    setSearchParams(params, { replace: true });
+    setExpandedChapters(new Set());
+    setActiveChatId(null);
+  };
+
+  const switchChapter = (cid: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("subject", effectiveSubjectId);
+    params.set("chapter", cid);
+    params.delete("topic");
+    params.delete("chat");
+    setSearchParams(params, { replace: true });
+    setExpandedChapters((prev) => new Set(prev).add(cid));
+    setActiveChatId(null);
+  };
+
+  const renderTopicButton = (cid: string, topic: Topic) => {
+    const isActive = topic.id === topicId;
+    const done = doneMap.get(`${activeSubject.id}|${cid}|${topic.id}`);
+    return (
+      <button
+        key={topic.id}
+        type="button"
+        onClick={() => selectTopic(activeSubject.id, cid, topic.id)}
+        className={cn(
+          "flex w-full cursor-pointer items-center gap-2 px-3 py-2 pl-7 text-left transition-colors",
+          isActive ? "bg-teal-100/70" : "hover:bg-accent/60",
+        )}
+      >
+        {done ? (
+          <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" />
+        ) : (
+          <Circle className="size-3.5 shrink-0 text-border" />
+        )}
+        <span
+          className={cn(
+            "flex-1 text-[12.5px] leading-snug",
+            isActive ? "font-semibold text-teal-800" : "text-foreground/80",
+            done && "text-muted-foreground",
+          )}
+        >
+          {topic.name}
+        </span>
+        <span className="shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700">
+          {topic.pyq} PYQs
+        </span>
+      </button>
+    );
   };
 
   const handleSend = async (content?: string) => {
@@ -365,132 +464,171 @@ export default function Study() {
 
           {/* chapter / topic tree */}
           <div className="sheet flex min-h-0 flex-1 flex-col">
-            <div className="flex items-center justify-between border-b border-border/70 px-4 py-3">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                NCERT syllabus · Class 11 & 12
-              </p>
-              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
-                {activeSubject.chapters.length} chapters
-              </span>
+            <div className="border-b border-border/70 px-4 py-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                  NCERT syllabus · Class 11 & 12
+                </p>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+                  {activeSubject.chapters.length} chapters
+                </span>
+              </div>
+              <div className="relative mt-2.5">
+                <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={syllabusQuery}
+                  onChange={(e) => setSyllabusQuery(e.target.value)}
+                  placeholder="Search chapter or topic…"
+                  className="h-8 rounded-lg bg-background pl-8 pr-8 text-[12.5px]"
+                />
+                {syllabusQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSyllabusQuery("")}
+                    aria-label="Clear search"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full p-0.5 text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <X className="size-3.5" />
+                  </button>
+                )}
+              </div>
+              {!syllabusQuery && (
+                <div className="mt-2 flex items-center gap-1.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setExpandedChapters(
+                        new Set(activeSubject.chapters.map((c) => c.id)),
+                      )
+                    }
+                    className="cursor-pointer font-semibold text-teal-600 hover:underline"
+                  >
+                    Expand all
+                  </button>
+                  <span className="text-border">·</span>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedChapters(new Set())}
+                    className="cursor-pointer font-semibold text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Collapse all
+                  </button>
+                </div>
+              )}
             </div>
             <ScrollArea className="min-h-0 flex-1">
-              <div className="space-y-5 p-4">
-                {subjectChaptersByClass(activeSubject).map(
-                  ({ cls, chapters }) => (
+              {syllabusQuery.trim() ? (
+                <div className="space-y-5 p-4">
+                  {filteredTree?.map(({ cls, chapters }) => (
                     <div key={cls}>
                       <p className="pb-1.5 font-display text-sm font-bold text-foreground">
                         Class {cls}
                       </p>
                       <div className="space-y-1.5">
-                        {chapters.map((chapter) => {
-                          const expanded = expandedChapters.has(chapter.id);
-                          const doneCount = chapter.topics.filter((t) =>
-                            doneMap.get(
-                              `${activeSubject.id}|${chapter.id}|${t.id}`,
-                            ),
-                          ).length;
-                          return (
-                            <div
-                              key={chapter.id}
-                              className="overflow-hidden rounded-lg border border-border/70"
-                            >
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setExpandedChapters((prev) => {
-                                    const next = new Set(prev);
-                                    if (next.has(chapter.id)) {
-                                      next.delete(chapter.id);
-                                    } else {
-                                      next.add(chapter.id);
-                                    }
-                                    return next;
-                                  })
-                                }
-                                className={cn(
-                                  "flex w-full cursor-pointer items-center gap-2 px-3 py-2.5 text-left transition-colors",
-                                  chapter.id === chapterId
-                                    ? "bg-teal-50"
-                                    : "hover:bg-accent",
-                                )}
-                              >
-                                {expanded ? (
-                                  <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
-                                ) : (
-                                  <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
-                                )}
-                                <span
-                                  className={cn(
-                                    "flex-1 text-[13px] font-medium leading-snug",
-                                    chapter.id === chapterId &&
-                                      "text-teal-700",
-                                  )}
-                                >
-                                  {chapter.name}
-                                </span>
-                                {doneCount > 0 && (
-                                  <span className="shrink-0 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
-                                    {doneCount}/{chapter.topics.length}
-                                  </span>
-                                )}
-                              </button>
-                              {expanded && (
-                                <div className="border-t border-dashed border-border/70 bg-card/60">
-                                  {chapter.topics.map((topic) => {
-                                    const isActive = topic.id === topicId;
-                                    const done = doneMap.get(
-                                      `${activeSubject.id}|${chapter.id}|${topic.id}`,
-                                    );
-                                    return (
-                                      <button
-                                        key={topic.id}
-                                        type="button"
-                                        onClick={() =>
-                                          selectTopic(
-                                            activeSubject.id,
-                                            chapter.id,
-                                            topic.id,
-                                          )
-                                        }
-                                        className={cn(
-                                          "flex w-full cursor-pointer items-center gap-2 px-3 py-2 pl-7 text-left transition-colors",
-                                          isActive
-                                            ? "bg-teal-100/70"
-                                            : "hover:bg-accent/60",
-                                        )}
-                                      >
-                                        {done ? (
-                                          <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" />
-                                        ) : (
-                                          <Circle className="size-3.5 shrink-0 text-border" />
-                                        )}
-                                        <span
-                                          className={cn(
-                                            "flex-1 text-[12.5px] leading-snug",
-                                            isActive
-                                              ? "font-semibold text-teal-800"
-                                              : "text-foreground/80",
-                                            done && "text-muted-foreground",
-                                          )}
-                                        >
-                                          {topic.name}
-                                        </span>
-                                        <span className="shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700">
-                                          {topic.pyq} PYQs
-                                        </span>
-                                      </button>
-                                    );
-                                  })}
-                                </div>
+                        {chapters.map(({ chapter, topics }) => (
+                          <div
+                            key={chapter.id}
+                            className="overflow-hidden rounded-lg border border-teal-300/70 bg-teal-50/40"
+                          >
+                            <div className="flex items-center gap-2 px-3 py-2.5">
+                              <ChevronDown className="size-3.5 shrink-0 text-teal-600" />
+                              <span className="flex-1 text-[13px] font-semibold leading-snug text-teal-800">
+                                {chapter.name}
+                              </span>
+                            </div>
+                            <div className="border-t border-dashed border-teal-300/50">
+                              {topics.map((topic) =>
+                                renderTopicButton(chapter.id, topic),
                               )}
                             </div>
-                          );
-                        })}
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ),
-                )}
-              </div>
+                  ))}
+                  {filteredTree && filteredTree.length === 0 && (
+                    <p className="py-6 text-center text-xs text-muted-foreground">
+                      No chapters or topics match “{syllabusQuery.trim()}”.
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-5 p-4">
+                  {subjectChaptersByClass(activeSubject).map(
+                    ({ cls, chapters }) => (
+                      <div key={cls}>
+                        <p className="pb-1.5 font-display text-sm font-bold text-foreground">
+                          Class {cls}
+                        </p>
+                        <div className="space-y-1.5">
+                          {chapters.map((chapter) => {
+                            const expanded = expandedChapters.has(chapter.id);
+                            const doneCount = chapter.topics.filter((t) =>
+                              doneMap.get(
+                                `${activeSubject.id}|${chapter.id}|${t.id}`,
+                              ),
+                            ).length;
+                            return (
+                              <div
+                                key={chapter.id}
+                                className="overflow-hidden rounded-lg border border-border/70"
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setExpandedChapters((prev) => {
+                                      const next = new Set(prev);
+                                      if (next.has(chapter.id)) {
+                                        next.delete(chapter.id);
+                                      } else {
+                                        next.add(chapter.id);
+                                      }
+                                      return next;
+                                    })
+                                  }
+                                  className={cn(
+                                    "flex w-full cursor-pointer items-center gap-2 px-3 py-2.5 text-left transition-colors",
+                                    chapter.id === chapterId
+                                      ? "bg-teal-50"
+                                      : "hover:bg-accent",
+                                  )}
+                                >
+                                  {expanded ? (
+                                    <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+                                  ) : (
+                                    <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
+                                  )}
+                                  <span
+                                    className={cn(
+                                      "flex-1 text-[13px] font-medium leading-snug",
+                                      chapter.id === chapterId &&
+                                        "text-teal-700",
+                                    )}
+                                  >
+                                    {chapter.name}
+                                  </span>
+                                  {doneCount > 0 && (
+                                    <span className="shrink-0 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700">
+                                      {doneCount}/{chapter.topics.length}
+                                    </span>
+                                  )}
+                                </button>
+                                {expanded && (
+                                  <div className="border-t border-dashed border-border/70 bg-card/60">
+                                    {chapter.topics.map((topic) =>
+                                      renderTopicButton(chapter.id, topic),
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ),
+                  )}
+                </div>
+              )}
             </ScrollArea>
           </div>
 
@@ -551,22 +689,104 @@ export default function Study() {
           </div>
         </aside>
 
-        {/* =================== GENERATOR TOOL PANEL =================== */}
-        {activeTool && activeTopic && activeChapter ? (
-          <ToolPanel
-            key={`${activeTool}-${activeTopic.id}`}
-            tool={activeTool}
-            stream={stream}
-            subjectId={effectiveSubjectId}
-            chapterId={activeChapter.id}
-            topicId={activeTopic.id}
-            topicName={activeTopic.name}
-            contextLine={`${activeSubject.name} · Class ${activeChapter.class} · ${activeChapter.name}`}
-            existingChatId={contextChat?._id ?? null}
-            onChatIdChange={(id) => setActiveChatId(id)}
-            onClose={() => setActiveTool(null)}
-          />
-        ) : (
+        {/* =================== MAIN COLUMN =================== */}
+        <div className="flex min-w-0 flex-1 flex-col gap-4 lg:min-h-0">
+          {/* quick chapter/topic picker — fast access to any topic */}
+          <div className="sheet flex flex-wrap items-center gap-2 p-2.5 sm:p-3">
+            <div className="flex items-center gap-1.5 pr-1">
+              <span className="flex size-6 items-center justify-center rounded-md bg-gradient-to-br from-violet-500 to-indigo-500 text-white">
+                <MousePointerClick className="size-3.5" />
+              </span>
+              <p className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                Quick pick
+              </p>
+            </div>
+            <Select value={effectiveSubjectId} onValueChange={switchSubject}>
+              <SelectTrigger
+                size="sm"
+                className="h-8 min-w-[112px] flex-1 rounded-lg text-[12.5px] sm:flex-none"
+              >
+                <SelectValue placeholder="Subject" />
+              </SelectTrigger>
+              <SelectContent>
+                {subjectDefs.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    <span
+                      className={cn(
+                        "flex items-center gap-2",
+                        s.palette.text,
+                      )}
+                    >
+                      {SUBJECT_ICONS[s.id]}
+                      {s.name}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={chapterId ?? ""} onValueChange={switchChapter}>
+              <SelectTrigger
+                size="sm"
+                className="h-8 min-w-[170px] flex-[2] rounded-lg text-[12.5px] sm:flex-none"
+              >
+                <SelectValue placeholder="Choose chapter" />
+              </SelectTrigger>
+              <SelectContent className="max-w-[340px]">
+                {subjectChaptersByClass(activeSubject).map(
+                  ({ cls, chapters }) => (
+                    <SelectGroup key={cls}>
+                      <SelectLabel>Class {cls}</SelectLabel>
+                      {chapters.map((c) => (
+                        <SelectItem key={c.id} value={c.id} className="pr-8">
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ),
+                )}
+              </SelectContent>
+            </Select>
+            <Select
+              value={topicId ?? ""}
+              onValueChange={(v) =>
+                chapterId && selectTopic(effectiveSubjectId, chapterId, v)
+              }
+              disabled={!chapterId}
+            >
+              <SelectTrigger
+                size="sm"
+                className="h-8 min-w-[170px] flex-[2] rounded-lg text-[12.5px] sm:flex-none"
+              >
+                <SelectValue
+                  placeholder={chapterId ? "Choose topic" : "Pick a chapter first"}
+                />
+              </SelectTrigger>
+              <SelectContent className="max-w-[340px]">
+                {activeChapter?.topics.map((t) => (
+                  <SelectItem key={t.id} value={t.id} className="pr-8">
+                    {t.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* =================== GENERATOR TOOL PANEL =================== */}
+          {activeTool && activeTopic && activeChapter ? (
+            <ToolPanel
+              key={`${activeTool}-${activeTopic.id}`}
+              tool={activeTool}
+              stream={stream}
+              subjectId={effectiveSubjectId}
+              chapterId={activeChapter.id}
+              topicId={activeTopic.id}
+              topicName={activeTopic.name}
+              contextLine={`${activeSubject.name} · Class ${activeChapter.class} · ${activeChapter.name}`}
+              existingChatId={contextChat?._id ?? null}
+              onChatIdChange={(id) => setActiveChatId(id)}
+              onClose={() => setActiveTool(null)}
+            />
+          ) : (
           /* ============================= CHAT ============================= */
           <section className="sheet flex min-h-[70vh] flex-1 flex-col overflow-hidden lg:min-h-0">
           {/* context header */}
@@ -636,7 +856,7 @@ export default function Study() {
               </>
             ) : (
               <p className="text-sm font-semibold text-muted-foreground">
-                Pick a chapter & topic from the syllabus to start
+                Pick a chapter & topic above to start
               </p>
             )}
           </div>
@@ -656,9 +876,10 @@ export default function Study() {
                     Ask anything from the {streamDef.name} syllabus
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Choose a subject, expand a chapter, and tap a topic — then
-                    chat with the AI tutor about it. Every conversation is
-                    saved in your notebook.
+                    Use the <span className="font-semibold text-foreground">Quick pick</span>{" "}
+                    bar above (subject → chapter → topic) or browse the
+                    syllabus — then chat with the AI tutor about any topic.
+                    Every conversation is saved in your notebook.
                   </p>
                   <div className="mt-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2">
                     {subjectDefs.map((s) => (
@@ -795,8 +1016,9 @@ export default function Study() {
               make mistakes; verify against NCERT.
             </p>
           </div>
-        </section>
-        )}
+          </section>
+          )}
+        </div>
       </div>
     </AppShell>
   );
