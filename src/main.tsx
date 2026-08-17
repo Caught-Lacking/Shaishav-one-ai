@@ -21,6 +21,7 @@ import { SplashScreen } from "./components/SplashScreen";
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const Study = lazy(() => import("./pages/Study.tsx"));
+const Tools = lazy(() => import("./pages/Tools.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Simple loading fallback for route transitions
@@ -75,6 +76,14 @@ function AppRoutes() {
               element={
                 <RequireAuth>
                   <Study />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/tool/:toolId"
+              element={
+                <RequireAuth>
+                  <Tools />
                 </RequireAuth>
               }
             />

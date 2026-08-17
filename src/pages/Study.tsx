@@ -59,6 +59,16 @@ const SUBJECT_ICONS: Record<string, React.ReactNode> = {
   maths: <Layers className="size-4" />,
 };
 
+// Study page's inline generator panel — the five topic-based generators.
+// Every other tool lives in the sidebar under /tool/:id.
+const GENERATOR_TOOL_IDS = new Set([
+  "flashcards",
+  "quiz",
+  "notes",
+  "essay",
+  "summarizer",
+]);
+
 const SUGGESTIONS = [
   "Explain this topic simply, like I'm hearing it for the first time",
   "Give me a 5-question PYQ drill on this topic",
@@ -66,7 +76,7 @@ const SUGGESTIONS = [
   "Where do students usually go wrong here?",
 ];
 
-const TOOL_ICONS: Record<ToolId, React.ReactNode> = {
+const TOOL_ICONS: Record<string, React.ReactNode> = {
   flashcards: <Layers className="size-4" />,
   quiz: <ListChecks className="size-4" />,
   notes: <NotebookPen className="size-4" />,
@@ -267,7 +277,7 @@ export default function Study() {
               <ChevronDown className="ml-auto size-3.5 text-muted-foreground transition-transform data-[state=closed]:-rotate-90" />
             </CollapsibleTrigger>
             <CollapsibleContent className="mt-3 space-y-1.5">
-              {TOOL_DEFS.map((t) => {
+              {TOOL_DEFS.filter((t) => GENERATOR_TOOL_IDS.has(t.id)).map((t) => {
                 const disabled = !activeTopic;
                 const active = activeTool === t.id;
                 return (

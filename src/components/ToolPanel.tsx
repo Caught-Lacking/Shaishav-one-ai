@@ -3,38 +3,20 @@ import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { Markdown } from "@/components/Markdown";
+import { FlashcardsView, QuizView } from "@/components/ToolViews";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import {
-  parseFlashcards,
-  parseQuiz,
-  getToolDef,
-  type ToolId,
-} from "@/lib/tools";
+import { getToolDef, type ToolId } from "@/lib/tools";
+import { getIcon } from "@/components/tool-icons";
 import type { StreamId } from "@/lib/curriculum";
 import {
   CheckCircle2,
-  Layers,
-  ListChecks,
   Loader2,
-  NotebookPen,
-  PenLine,
-  RefreshCw,
-  Sparkles,
   Wand2,
   X,
-  XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
-
-const TOOL_ICONS: Record<ToolId, React.ReactNode> = {
-  flashcards: <Layers className="size-5" />,
-  quiz: <ListChecks className="size-5" />,
-  notes: <NotebookPen className="size-5" />,
-  essay: <PenLine className="size-5" />,
-  summarizer: <Sparkles className="size-5" />,
-};
 
 interface ToolPanelProps {
   tool: ToolId;
@@ -47,184 +29,6 @@ interface ToolPanelProps {
   existingChatId: Id<"chats"> | null;
   onChatIdChange: (id: Id<"chats">) => void;
   onClose: () => void;
-}
-
-function FlashcardsView({ content }: { content: string }) {
-  const cards = useMemo(() => parseFlashcards(content), [content]);
-  const [flipped, setFlipped] = useState<Set<number>>(new Set());
-
-  if (cards.length === 0) {
-    return <Markdown content={content} />;
-  }
-
-  const toggle = (i: number) =>
-    setFlipped((prev) => {
-      const next = new Set(prev);
-      if (next.has(i)) next.delete(i);
-      else next.add(i);
-      return next;
-    });
-
-  return (
-    <div>
-      <p className="mb-3 text-xs text-muted-foreground">
-        {cards.length} cards — tap a card to flip it.
-      </p>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {cards.map((card, i) => {
-          const isFlipped = flipped.has(i);
-          return (
-            <button
-              key={i}
-              type="button"
-              onClick={() => toggle(i)}
-              className={cn(
-                "flex min-h-28 cursor-pointer flex-col justify-between rounded-xl border-2 p-4 text-left transition-all",
-                isFlipped
-                  ? "border-emerald-300 bg-emerald-50"
-                  : "border-amber-200 bg-amber-50 hover:border-amber-300",
-              )}
-            >
-              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                {isFlipped ? "Answer" : `Card ${i + 1}`}
-              </span>
-              <span className="mt-2 text-[13.5px] font-medium leading-6">
-                {isFlipped ? card.a : card.q}
-              </span>
-              <span className="mt-2 text-[10px] text-muted-foreground">
-                {isFlipped ? "tap to flip back" : "tap to reveal"}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function QuizView({ content }: { content: string }) {
-  const questions = useMemo(() => parseQuiz(content), [content]);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [checked, setChecked] = useState(false);
-
-  if (questions.length === 0) {
-    return <Markdown content={content} />;
-  }
-
-  const score = questions.reduce(
-    (acc, q, i) =>
-      acc + (q.answerIndex !== null && answers[i] === q.answerIndex ? 1 : 0),
-    0,
-  );
-
-  const reset = () => {
-    setAnswers({});
-    setChecked(false);
-  };
-
-  return (
-    <div>
-      <div className="mb-3 flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">
-          {questions.length} questions · select an option, then check.
-        </p>
-        {checked && (
-          <span
-            className={cn(
-              "rounded-full px-3 py-1 text-xs font-bold",
-              score === questions.length
-                ? "bg-emerald-100 text-emerald-700"
-                : "bg-amber-100 text-amber-700",
-            )}
-          >
-            Score: {score}/{questions.length}
-          </span>
-        )}
-      </div>
-
-      <div className="space-y-5">
-        {questions.map((q, qi) => (
-          <div key={qi} className="rounded-xl border border-border bg-card p-4">
-            <p className="text-[14px] font-semibold leading-6">
-              <span className="mr-1.5 text-teal-600">Q{qi + 1}.</span>
-              {q.q}
-            </p>
-            <div className="mt-3 grid gap-1.5 sm:grid-cols-2">
-              {q.options.map((opt, oi) => {
-                const selected = answers[qi] === oi;
-                const isCorrect = checked && q.answerIndex === oi;
-                const isWrongPick =
-                  checked && selected && q.answerIndex !== oi;
-                return (
-                  <button
-                    key={oi}
-                    type="button"
-                    disabled={checked}
-                    onClick={() =>
-                      setAnswers((prev) => ({ ...prev, [qi]: oi }))
-                    }
-                    className={cn(
-                      "flex cursor-pointer items-start gap-2 rounded-lg border-2 px-3 py-2 text-left text-[13px] leading-5 transition-colors",
-                      checked
-                        ? isCorrect
-                          ? "border-emerald-400 bg-emerald-50 text-emerald-800"
-                          : isWrongPick
-                            ? "border-rose-300 bg-rose-50 text-rose-700"
-                            : "border-border text-muted-foreground"
-                        : selected
-                          ? "border-teal-400 bg-teal-50"
-                          : "border-border hover:border-teal-300 hover:bg-teal-50/40",
-                    )}
-                  >
-                    <span className="mt-0.5 font-bold">
-                      {String.fromCharCode(65 + oi)}.
-                    </span>
-                    <span>{opt}</span>
-                    {checked && isCorrect && (
-                      <CheckCircle2 className="ml-auto size-4 shrink-0 text-emerald-500" />
-                    )}
-                    {checked && isWrongPick && (
-                      <XCircle className="ml-auto size-4 shrink-0 text-rose-500" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            {checked && q.answerIndex !== null && (
-              <p className="mt-2 text-[11px] text-muted-foreground">
-                Correct answer:{" "}
-                <span className="font-bold text-emerald-600">
-                  {String.fromCharCode(65 + q.answerIndex)}.{" "}
-                  {q.options[q.answerIndex]}
-                </span>
-              </p>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-5 flex gap-2">
-        <Button
-          size="sm"
-          className="rounded-full"
-          disabled={checked}
-          onClick={() => setChecked(true)}
-        >
-          <CheckCircle2 className="size-4" />
-          Check answers
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="rounded-full"
-          onClick={reset}
-        >
-          <RefreshCw className="size-4" />
-          Retry
-        </Button>
-      </div>
-    </div>
-  );
 }
 
 export function ToolPanel({
@@ -240,10 +44,17 @@ export function ToolPanel({
   onClose,
 }: ToolPanelProps) {
   const def = getToolDef(tool);
+  const Icon = getIcon(def.icon);
   const generateTool = useAction(api.chat.generateTool);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [instruction, setInstruction] = useState("");
+
+  const isFlashcards = useMemo(
+    () => tool === "flashcards" && !!result,
+    [tool, result],
+  );
+  const isQuiz = useMemo(() => tool === "quiz" && !!result, [tool, result]);
 
   const run = async () => {
     setLoading(true);
@@ -255,7 +66,7 @@ export function ToolPanel({
         subjectId,
         chapterId,
         topicId,
-        tool,
+        tool: tool as "flashcards" | "quiz" | "notes" | "essay" | "summarizer",
         instruction: instruction.trim() || undefined,
       });
       setResult(res.content);
@@ -280,7 +91,7 @@ export function ToolPanel({
             def.iconBg,
           )}
         >
-          {TOOL_ICONS[tool]}
+          <Icon className="size-4" />
         </span>
         <div className="min-w-0">
           <p className="text-sm font-bold leading-tight">{def.label}</p>
@@ -333,9 +144,14 @@ export function ToolPanel({
         {loading ? (
           <div className="flex flex-col items-center gap-3 py-16 text-center">
             <div className="relative flex items-center justify-center">
-              <span className="ring-spin absolute size-20 rounded-full border-2 border-dashed border-teal-300/60" />
-              <span className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-indigo-500 text-white shadow-md">
-                {TOOL_ICONS[tool]}
+              <span className="ring-spin absolute size-20 rounded-full border-2 border-dashed border-violet-300/60" />
+              <span
+                className={cn(
+                  "flex size-12 items-center justify-center rounded-xl text-white shadow-md",
+                  def.iconBg,
+                )}
+              >
+                <Icon className="size-5" />
               </span>
             </div>
             <p className="text-sm font-semibold text-foreground">
@@ -352,9 +168,9 @@ export function ToolPanel({
               <CheckCircle2 className="size-3.5 text-emerald-500" />
               Saved to your notebook
             </div>
-            {tool === "flashcards" ? (
+            {isFlashcards ? (
               <FlashcardsView content={result} />
-            ) : tool === "quiz" ? (
+            ) : isQuiz ? (
               <QuizView content={result} />
             ) : (
               <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
@@ -370,7 +186,7 @@ export function ToolPanel({
                 def.iconBg,
               )}
             >
-              {TOOL_ICONS[tool]}
+              <Icon className="size-6" />
             </div>
             <h3 className="mt-4 font-display text-lg font-bold">
               {def.label} for {topicName}

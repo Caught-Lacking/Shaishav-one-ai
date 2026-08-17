@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import shaishavLogo from "@/assets/logo.svg";
+import shaishavLogo from "@/assets/shaishav-logo.svg";
 
 /**
  * Full-screen brand splash shown for ~3 seconds on app load.
- * Deep royal-blue background with the uploaded Shaishav logo, rotating
- * dashed rings around it, and the "SHAISHAV ONE AI" wordmark below.
+ * Uses the uploaded logo image exactly as it is — the gold peacock emblem
+ * with the SHAISHAV wordmark — centered on the deep royal-blue background,
+ * with rotating rings around it.
  */
 export function SplashScreen() {
   return (
@@ -22,51 +23,38 @@ export function SplashScreen() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 42%, rgba(90,110,255,0.28), transparent 70%)",
+            "radial-gradient(ellipse 60% 50% at 50% 42%, rgba(110,125,255,0.22), transparent 70%)",
         }}
       />
 
       {/* rotating rings around the logo */}
       <div className="relative flex items-center justify-center">
-        <span className="ring-spin absolute size-44 rounded-full border-2 border-dashed border-amber-300/50" />
-        <span className="ring-spin-reverse absolute size-56 rounded-full border border-amber-200/30" />
+        <span className="ring-spin absolute size-56 rounded-full border-2 border-dashed border-amber-300/50 sm:size-64" />
+        <span className="ring-spin-reverse absolute size-64 rounded-full border border-amber-200/30 sm:size-72" />
         <span
-          className="ring-spin absolute size-56 rounded-full"
+          className="ring-spin absolute size-64 rounded-full sm:size-72"
           style={{
             border: "2px dotted rgba(255,210,92,0.35)",
             animationDuration: "9s",
           }}
         />
-        <motion.div
-          initial={{ scale: 0.86, opacity: 0.4 }}
+        <motion.img
+          src={shaishavLogo}
+          alt="SHAISHAV ONE AI"
+          initial={{ scale: 0.88, opacity: 0.35 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.9, ease: "easeOut" }}
-          className="relative z-10 rounded-[2rem] bg-white p-4 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.55)]"
-        >
-          <img
-            src={shaishavLogo}
-            alt="Shaishav One AI"
-            width={168}
-            height={168}
-            className="block size-40 object-contain sm:size-44"
-          />
-        </motion.div>
+          className="relative z-10 block w-64 object-contain drop-shadow-[0_18px_45px_rgba(0,0,0,0.45)] sm:w-80"
+          draggable={false}
+        />
       </div>
 
-      {/* wordmark below the emblem */}
+      {/* tagline below the logo */}
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35, duration: 0.7 }}
-        className="relative z-10 mt-7 font-display text-lg font-bold tracking-[0.42em] text-amber-200/90"
-      >
-        SHAISHAV ONE AI
-      </motion.p>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.8 }}
-        className="relative z-10 mt-2 text-[11px] font-medium uppercase tracking-[0.3em] text-indigo-200/70"
+        transition={{ delay: 0.4, duration: 0.7 }}
+        className="relative z-10 mt-8 text-[11px] font-semibold uppercase tracking-[0.34em] text-indigo-200/80 sm:text-xs"
       >
         NEET · JEE · NCERT study notebook
       </motion.p>

@@ -1,16 +1,9 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Stethoscope, Wrench } from "lucide-react";
+import { ArrowRight, Atom, Stethoscope, Wrench } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Brand } from "@/components/Brand";
 import { cn } from "@/lib/utils";
-import {
-  countStreamChapters,
-  countStreamPyqs,
-  countStreamTopics,
-  getStreamSubjects,
-  streams,
-  type StreamId,
-} from "@/lib/curriculum";
+import { getStreamSubjects, streams, type StreamId } from "@/lib/curriculum";
 
 function PickCard({
   streamId,
@@ -28,84 +21,63 @@ function PickCard({
   return (
     <motion.button
       type="button"
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.4 }}
-      whileHover={{ y: -5 }}
+      transition={{ delay, duration: 0.45, ease: "easeOut" }}
+      whileHover={{ y: -6, scale: 1.012 }}
       onClick={() => onPick(streamId)}
-      className={cn(
-        "group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-2xl border-2 bg-card text-left shadow-sm transition-colors",
-        isNeet
-          ? "border-teal-200 hover:border-teal-400"
-          : "border-indigo-200 hover:border-indigo-400",
-      )}
+      className="group relative flex w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-border/70 bg-white p-6 text-left shadow-[0_18px_45px_-18px_rgba(60,40,120,0.25)] transition-shadow hover:shadow-[0_24px_60px_-20px_rgba(60,40,120,0.35)]"
     >
+      {/* soft circular accent top-right */}
       <div
+        aria-hidden
         className={cn(
-          "flex items-center justify-between bg-gradient-to-r px-6 py-5 text-white",
-          stream.palette.gradient,
+          "pointer-events-none absolute -right-14 -top-14 size-44 rounded-full blur-2xl",
+          isNeet
+            ? "bg-gradient-to-br from-emerald-200/70 to-teal-100/50"
+            : "bg-gradient-to-br from-violet-200/70 to-indigo-100/50",
         )}
-      >
+      />
+
+      <div className="relative flex items-start justify-between">
         <div>
-          <p className="font-display text-2xl font-bold">{stream.name}</p>
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/85">
-            {stream.tagline} · Class 11 & 12
+          <div
+            className={cn(
+              "flex size-14 items-center justify-center rounded-2xl text-white shadow-md",
+              isNeet ? "bg-emerald-500" : "bg-indigo-500",
+            )}
+          >
+            {isNeet ? (
+              <Stethoscope className="size-7" />
+            ) : (
+              <Atom className="size-7" />
+            )}
+          </div>
+          <h3 className="mt-4 flex items-center gap-2 font-display text-2xl font-bold tracking-tight text-foreground">
+            {stream.name}
+            {isNeet ? (
+              <Stethoscope className="size-4 text-muted-foreground/70" />
+            ) : (
+              <Wrench className="size-4 text-muted-foreground/70" />
+            )}
+          </h3>
+          <p className="mt-0.5 text-sm font-medium text-muted-foreground">
+            {isNeet ? "Medical Entrance" : "Engineering Entrance"}
           </p>
         </div>
-        <div className="flex size-11 items-center justify-center rounded-xl bg-white/20">
-          {isNeet ? (
-            <Stethoscope className="size-6" />
-          ) : (
-            <Wrench className="size-6" />
-          )}
-        </div>
       </div>
-      <div className="flex flex-1 flex-col px-6 py-5">
-        <p className="text-[13px] leading-5 text-muted-foreground">
-          {stream.description}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {subjectDefs.map((s) => (
-            <span
-              key={s.id}
-              className={cn(
-                "rounded-full px-2.5 py-1 text-xs font-semibold",
-                s.palette.chip,
-              )}
-            >
-              {s.name}
-            </span>
-          ))}
-        </div>
-        <div className="mt-5 flex items-center gap-4 text-xs font-medium text-muted-foreground">
-          <span>
-            <span className="font-bold text-foreground">
-              {countStreamChapters(streamId)}
-            </span>{" "}
-            chapters
-          </span>
-          <span>
-            <span className="font-bold text-foreground">
-              {countStreamTopics(streamId)}
-            </span>{" "}
-            topics
-          </span>
-          <span>
-            <span className="font-bold text-foreground">
-              {countStreamPyqs(streamId)}+
-            </span>{" "}
-            PYQs
-          </span>
-        </div>
-      </div>
-      <div
-        className={cn(
-          "flex items-center justify-between border-t px-6 py-3.5",
-          isNeet ? "border-teal-100 bg-teal-50/70" : "border-indigo-100 bg-indigo-50/70",
-        )}
-      >
-        <span className="text-sm font-semibold">Choose {stream.name}</span>
-        <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+
+      <p className="relative mt-4 text-[13px] font-semibold text-violet-700">
+        {subjectDefs.map((s) => s.name).join(" · ")}
+      </p>
+
+      <p className="relative mt-2 text-[12.5px] leading-5 text-muted-foreground">
+        {stream.description}
+      </p>
+
+      <div className="relative mt-auto flex items-center gap-1.5 pt-6 text-[13.5px] font-semibold text-foreground transition-colors group-hover:text-violet-700">
+        {isNeet ? "For future doctors" : "For future engineers"}
+        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
       </div>
     </motion.button>
   );
@@ -129,32 +101,52 @@ export function StreamPicker({
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden">
       <div className="dotted-paper pointer-events-none absolute inset-0 opacity-50" />
-      <div className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-teal-200/40 blur-3xl" />
-      <div className="pointer-events-none absolute -left-24 bottom-10 size-72 rounded-full bg-rose-200/40 blur-3xl" />
+      <div className="pointer-events-none absolute -right-28 top-16 size-80 rounded-full bg-violet-200/40 blur-3xl" />
+      <div className="pointer-events-none absolute -left-28 bottom-10 size-80 rounded-full bg-emerald-200/40 blur-3xl" />
 
-      <header className="relative z-10 mx-auto flex w-full max-w-4xl items-center justify-between px-4 py-5 sm:px-6">
-        <Brand markSize="sm" />
+      <header className="relative z-10 flex justify-center pt-10">
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Brand markSize="sm" />
+        </motion.div>
       </header>
 
-      <main className="relative z-10 mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center px-4 pb-16 sm:px-6">
-        <div className="mx-auto max-w-xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
-            <ArrowRight className="size-3.5" />
-            One small choice · everything personalises after this
-          </span>
-          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Which exam are you preparing for?
-          </h1>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
-            Your subjects, chapters, PYQs and AI tutor will all adapt to your
-            stream. You can switch anytime.
-          </p>
+      <main className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-4 pb-14 sm:px-6">
+        <div className="mx-auto text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08, duration: 0.5 }}
+            className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+          >
+            Welcome to Shaishav One AI
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.16, duration: 0.5 }}
+            className="mt-2.5 text-[15px] text-muted-foreground"
+          >
+            Choose your path to get started
+          </motion.p>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          <PickCard streamId="neet" onPick={handlePick} delay={0.1} />
-          <PickCard streamId="jee" onPick={handlePick} delay={0.2} />
+        <div className="mt-10 grid gap-5 sm:grid-cols-2">
+          <PickCard streamId="neet" onPick={handlePick} delay={0.22} />
+          <PickCard streamId="jee" onPick={handlePick} delay={0.32} />
         </div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="mt-10 text-center text-xs text-muted-foreground"
+        >
+          You can switch tracks anytime from the sidebar.
+        </motion.p>
       </main>
     </div>
   );
