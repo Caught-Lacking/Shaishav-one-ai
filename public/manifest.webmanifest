@@ -1,16 +1,16 @@
 {
-  "name": "Shaishav One AI",
-  "short_name": "Shaishav AI",
-  "description": "AI-powered NCERT study notebook for NEET & JEE students — notes, flashcards, quizzes, PYQs and more.",
+  "name": "freebuff.com application",
+  "short_name": "freebuff.com",
+  "description": "freebuff.com application",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fdfcff",
-  "theme_color": "#5b4dd6",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
   "icons": [
     {
-      "src": "/logo.svg",
+      "src": "/logo.png",
       "sizes": "any",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
