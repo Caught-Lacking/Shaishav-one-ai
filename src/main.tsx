@@ -20,7 +20,6 @@ import { SplashScreen } from "./components/SplashScreen";
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const Study = lazy(() => import("./pages/Study.tsx"));
 const Tools = lazy(() => import("./pages/Tools.tsx"));
-const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
@@ -75,10 +74,13 @@ function AppRoutes() {
         <Routes>
           {/* No login page — the app starts straight at the stream picker / dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          {/* Old login page URL (bookmarks/preview history) → back into the app */}
+          <Route path="/auth" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/study" element={<Study />} />
           <Route path="/tool/:toolId" element={<Tools />} />
-          <Route path="*" element={<NotFound />} />
+          {/* Anything else lands in the app too — never a 404 after the splash */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Suspense>
       <Toaster />
