@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Flag,
   LayoutDashboard,
-  LogOut,
   Menu,
   MessagesSquare,
   X,
@@ -52,7 +51,7 @@ export function AppShell({
   stream: StreamId;
   children: ReactNode;
 }) {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -95,11 +94,6 @@ export function AppShell({
     }
     return "Shaishav One AI";
   }, [location.pathname]);
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
 
   const handleSwitchStream = async (id: StreamId) => {
     if (id === stream) return;
@@ -411,7 +405,7 @@ export function AppShell({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel className="truncate text-xs">
-                    {user?.email ?? "Guest"}
+                    {user?.name ?? "Guest student"}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -420,13 +414,6 @@ export function AppShell({
                   >
                     <BookOpen className="mr-2 size-4" />
                     AI Tutor
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={handleSignOut}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
-                    <LogOut className="mr-2 size-4" />
-                    Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

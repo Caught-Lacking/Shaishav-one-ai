@@ -1,11 +1,10 @@
 import '@vly-ai/integrations';
 import { Toaster } from "@/components/ui/sonner";
-import { RequireAuth } from "@/components/RequireAuth";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
-import { ConvexAuthProvider } from "@convex-dev/auth/react";
-import { ConvexReactClient } from "convex/react";
+import { ConvexAuthProvider, useAuthActions } from "@convex-dev/auth/react";
+import { useConvexAuth, ConvexReactClient } from "convex/react";
 import { AnimatePresence } from "framer-motion";
-import React, { StrictMode, useEffect, lazy, Suspense, useState } from "react";
+import React, { StrictMode, useEffect, lazy, useRef, Suspense, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   BrowserRouter,
@@ -18,7 +17,6 @@ import "./index.css";
 import { SplashScreen } from "./components/SplashScreen";
 
 // Lazy load route components for better code splitting
-const AuthPage = lazy(() => import("./pages/Auth.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const Study = lazy(() => import("./pages/Study.tsx"));
 const Tools = lazy(() => import("./pages/Tools.tsx"));
@@ -33,9 +31,28 @@ function RouteLoading() {
   );
 }
 
-/** 3-second brand splash on first load, then fades away. */
+/**
+ * 3-second brand splash on first load, then fades away.
+ * While the splash plays, the student is silently signed in as a guest
+ * (anonymous Convex Auth session, remembered via cookies) — so there is no
+ * login page: splash → stream picker → app.
+ */
 function AppWithSplash() {
   const [showSplash, setShowSplash] = useState(true);
+  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { signIn } = useAuthActions();
+  const signInAttempted = useRef(false);
+
+  // Silently sign the student in as a guest exactly once (guarded against
+  // StrictMode double-effects) so there is no login page.
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && !signInAttempted.current) {
+      signInAttempted.current = true;
+      signIn("anonymous").catch((err) => {
+        console.warn("Auto guest sign-in failed:", err);
+      });
+    }
+  }, [isLoading, isAuthenticated, signIn]);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 3000);
@@ -52,47 +69,20 @@ function AppWithSplash() {
 
 function AppRoutes() {
   return (
-    <ConvexAuthProvider client={convex}>
-      <BrowserRouter>
-        <RouteSyncer />
-        <Suspense fallback={<RouteLoading />}>
-          <Routes>
-            {/* The app starts directly at login / signup */}
-            <Route path="/" element={<Navigate to="/auth" replace />} />
-            <Route
-              path="/auth"
-              element={<AuthPage redirectAfterAuth="/dashboard" />}
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <RequireAuth>
-                  <Dashboard />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/study"
-              element={
-                <RequireAuth>
-                  <Study />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/tool/:toolId"
-              element={
-                <RequireAuth>
-                  <Tools />
-                </RequireAuth>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-        <Toaster />
-      </BrowserRouter>
-    </ConvexAuthProvider>
+    <BrowserRouter>
+      <RouteSyncer />
+      <Suspense fallback={<RouteLoading />}>
+        <Routes>
+          {/* No login page — the app starts straight at the stream picker / dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/study" element={<Study />} />
+          <Route path="/tool/:toolId" element={<Tools />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+      <Toaster />
+    </BrowserRouter>
   );
 }
 
@@ -185,7 +175,9 @@ createRoot(document.getElementById("root")!).render(
       </ToolbarErrorBoundary>
       {/* Notebook paper grain over everything */}
       <div className="grain-overlay" aria-hidden />
-      <AppWithSplash />
+      <ConvexAuthProvider client={convex}>
+        <AppWithSplash />
+      </ConvexAuthProvider>
     </RootErrorBoundary>
   </StrictMode>,
 );
