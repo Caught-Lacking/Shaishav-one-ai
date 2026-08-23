@@ -116,19 +116,19 @@ const physics = buildSubject(
     ["Motion in a Straight Line", 11, [
       ["Position, distance & displacement", 3],
       ["Speed, velocity & acceleration", 4],
-      ["Kinematic equations", 6],
+      ["Kinematic equations", 8],
       ["Graphs of motion", 4],
       ["Relative motion", 2],
     ]],
     ["Motion in a Plane", 11, [
       ["Vectors & scalars", 3],
       ["Vector addition & subtraction", 4],
-      ["Projectile motion", 6],
+      ["Projectile motion", 7],
       ["Uniform circular motion", 4],
       ["Relative velocity in 2-D", 2],
     ]],
     ["Laws of Motion", 11, [
-      ["Newton's laws of motion", 6],
+      ["Newton's laws of motion", 8],
       ["Momentum & impulse", 3],
       ["Friction", 5],
       ["Dynamics of circular motion", 3],
@@ -206,10 +206,10 @@ const physics = buildSubject(
     ]],
     ["Electric Charges and Fields", 12, [
       ["Charge & Coulomb's law", 5],
-      ["Electric field & superposition", 6],
+      ["Electric field & superposition", 7],
       ["Field lines & flux", 3],
       ["Electric dipole", 4],
-      ["Gauss's law & applications", 6],
+      ["Gauss's law & applications", 8],
     ]],
     ["Electrostatic Potential and Capacitance", 12, [
       ["Potential & potential energy", 5],
@@ -266,19 +266,19 @@ const physics = buildSubject(
     ]],
     ["Wave Optics", 12, [
       ["Huygens principle", 3],
-      ["Interference & YDSE", 6],
+      ["Interference & YDSE", 8],
       ["Diffraction", 3],
       ["Polarisation", 3],
       ["Coherent sources", 2],
     ]],
     ["Dual Nature of Radiation and Matter", 12, [
-      ["Photoelectric effect", 6],
+      ["Photoelectric effect", 10],
       ["de Broglie wavelength", 4],
       ["Matter waves & Davisson-Germer", 2],
     ]],
     ["Atoms", 12, [
       ["Rutherford's model", 2],
-      ["Bohr model & energy levels", 6],
+      ["Bohr model & energy levels", 8],
       ["Hydrogen spectrum", 4],
       ["Line spectra & series", 3],
     ]],
@@ -312,7 +312,7 @@ const chemistry = buildSubject(
   },
   [
     ["Some Basic Concepts of Chemistry", 11, [
-      ["Mole concept & molar mass", 6],
+      ["Mole concept & molar mass", 8],
       ["Stoichiometry & limiting reagent", 5],
       ["Percentage composition & formulas", 3],
       ["Concentration terms", 3],
@@ -325,6 +325,13 @@ const chemistry = buildSubject(
       ["Orbitals & Aufbau principle", 4],
       ["Electronic configuration & Hund's rule", 4],
     ]],
+    ["States of Matter", 11, [
+      ["Ideal gas equation & gas laws", 4],
+      ["Kinetic theory of gases", 4],
+      ["Real gases & Van der Waals equation", 3],
+      ["Liquefaction of gases & critical constants", 2],
+      ["Plasma & states of matter", 1],
+    ]],
     ["Classification of Elements and Periodicity", 11, [
       ["Periodic table & blocks", 3],
       ["Periodic trends in size", 4],
@@ -335,9 +342,9 @@ const chemistry = buildSubject(
     ["Chemical Bonding and Molecular Structure", 11, [
       ["Ionic & covalent bonding", 4],
       ["Lewis structures & octet rule", 4],
-      ["VSEPR theory & shapes", 5],
+      ["VSEPR theory & shapes", 7],
       ["Hybridisation", 5],
-      ["Molecular orbital theory", 4],
+      ["Molecular orbital theory", 6],
       ["Hydrogen bonding", 2],
     ]],
     ["Thermodynamics", 11, [
@@ -350,8 +357,8 @@ const chemistry = buildSubject(
     ["Equilibrium", 11, [
       ["Dynamic equilibrium & law of mass action", 3],
       ["Kp & Kc relations", 4],
-      ["Le Chatelier's principle", 5],
-      ["Ionic equilibrium & pH", 5],
+      ["Le Chatelier's principle", 7],
+      ["Ionic equilibrium & pH", 7],
       ["Buffer solutions & solubility product", 4],
     ]],
     ["Redox Reactions", 11, [
@@ -395,6 +402,28 @@ const chemistry = buildSubject(
       ["Arrhenius equation & activation energy", 4],
       ["Catalysis", 2],
     ]],
+    ["Surface Chemistry", 12, [
+      ["Adsorption: physisorption & chemisorption", 5],
+      ["Factors affecting adsorption", 3],
+      ["Catalysis: homogeneous & heterogeneous", 4],
+      ["Enzyme catalysis & poisoning", 3],
+      ["Colloids: preparation & properties", 4],
+    ]],
+    ["General Principles and Processes of Isolation of Elements", 12, [
+      ["Occurrence & extraction of metals", 3],
+      ["Thermodynamic principles of extraction", 4],
+      ["Ellingham diagram", 4],
+      ["Refining of metals", 3],
+      ["Extraction of Cu, Fe, Zn, Al", 4],
+    ]],
+    ["p-Block Elements", 12, [
+      ["Group 15: Nitrogen family", 5],
+      ["Group 16: Oxygen family", 4],
+      ["Group 17: Halogens", 5],
+      ["Group 18: Noble gases", 3],
+      ["Interhalogen compounds & pseudohalides", 3],
+      ["Allotropy in p-block elements", 3],
+    ]],
     ["The d- and f-Block Elements", 12, [
       ["d-block properties & trends", 4],
       ["Transition metal compounds", 3],
@@ -410,7 +439,7 @@ const chemistry = buildSubject(
     ]],
     ["Haloalkanes and Haloarenes", 12, [
       ["Nomenclature & classification", 2],
-      ["SN1 & SN2 mechanisms", 5],
+      ["SN1 & SN2 mechanisms", 7],
       ["Elimination reactions", 3],
       ["Grignard reagents", 3],
       ["Haloarenes & environmental effects", 3],
@@ -424,9 +453,9 @@ const chemistry = buildSubject(
     ]],
     ["Aldehydes, Ketones and Carboxylic Acids", 12, [
       ["Preparation of carbonyls", 4],
-      ["Nucleophilic addition reactions", 5],
+      ["Nucleophilic addition reactions", 7],
       ["Oxidation & reduction", 4],
-      ["Aldol & Cannizzaro reactions", 4],
+      ["Aldol & Cannizzaro reactions", 6],
       ["Carboxylic acids: preparation & properties", 4],
     ]],
     ["Amines", 12, [
@@ -442,6 +471,20 @@ const chemistry = buildSubject(
       ["Enzymes", 2],
       ["Vitamins & nucleic acids", 3],
       ["Lipids & hormones", 2],
+    ]],
+    ["Polymers", 12, [
+      ["Classification of polymers", 3],
+      ["Addition & condensation polymerisation", 4],
+      ["Natural & synthetic polymers", 4],
+      ["Biodegradable polymers", 2],
+      ["Molecular weight & rubber", 2],
+    ]],
+    ["Chemistry in Everyday Life", 12, [
+      ["Drugs: classification & therapeutic action", 4],
+      ["Analgesics, antibiotics & antiseptics", 4],
+      ["Tranquillisers, antacids & antihistamines", 3],
+      ["Cleansing agents: soaps & detergents", 3],
+      ["Food additives & preservatives", 2],
     ]],
   ],
 );
@@ -507,7 +550,7 @@ const biology = buildSubject(
     ["Cell: The Unit of Life", 11, [
       ["Cell theory & overview", 2],
       ["Cell membrane & transport", 4],
-      ["Cell organelles", 5],
+      ["Cell organelles", 7],
       ["Nucleus & chromosomes", 3],
       ["Prokaryotic vs eukaryotic cells", 2],
     ]],
@@ -521,7 +564,7 @@ const biology = buildSubject(
     ["Cell Cycle and Cell Division", 11, [
       ["Cell cycle phases", 4],
       ["Mitosis", 4],
-      ["Meiosis", 5],
+      ["Meiosis", 7],
       ["Significance of division", 2],
     ]],
     ["Photosynthesis in Higher Plants", 11, [
@@ -560,25 +603,25 @@ const biology = buildSubject(
     ]],
     ["Excretory Products and their Elimination", 11, [
       ["Excretory organs", 2],
-      ["Nephron & urine formation", 5],
+      ["Nephron & urine formation", 7],
       ["Countercurrent mechanism", 3],
       ["Regulation of kidney function", 3],
       ["Disorders of excretory system", 2],
     ]],
     ["Locomotion and Movement", 11, [
       ["Types of movement & muscles", 3],
-      ["Skeletal muscle contraction (sliding filament)", 5],
+      ["Skeletal muscle contraction (sliding filament)", 8],
       ["Human skeleton", 3],
       ["Joints & disorders", 2],
     ]],
     ["Neural Control and Coordination", 11, [
-      ["Neurons & nerve impulse", 5],
+      ["Neurons & nerve impulse", 7],
       ["Synaptic transmission", 4],
       ["Central & peripheral nervous system", 3],
       ["Reflex action & sense organs", 3],
     ]],
     ["Chemical Coordination and Integration", 11, [
-      ["Endocrine glands & hormones", 5],
+      ["Endocrine glands & hormones", 7],
       ["Hormone mechanism of action", 3],
       ["Hypo & hypersecretion disorders", 3],
       ["Hormones of the heart, kidney & GI tract", 2],
@@ -605,15 +648,15 @@ const biology = buildSubject(
       ["Assisted reproductive technologies", 3],
     ]],
     ["Principles of Inheritance and Variation", 12, [
-      ["Mendel's laws of inheritance", 5],
-      ["Monohybrid & dihybrid crosses", 5],
+      ["Mendel's laws of inheritance", 9],
+      ["Monohybrid & dihybrid crosses", 8],
       ["Gene interactions & linkage", 4],
       ["Sex determination", 3],
       ["Chromosomal disorders & mutations", 4],
     ]],
     ["Molecular Basis of Inheritance", 12, [
       ["DNA structure & packaging", 4],
-      ["DNA replication", 4],
+      ["DNA replication", 6],
       ["Transcription & processing", 4],
       ["Genetic code & translation", 5],
       ["Regulation of gene expression (lac operon)", 4],
@@ -627,7 +670,7 @@ const biology = buildSubject(
     ]],
     ["Human Health and Disease", 12, [
       ["Pathogens & infectious diseases", 4],
-      ["Innate & acquired immunity", 5],
+      ["Innate & acquired immunity", 7],
       ["AIDS & HIV", 3],
       ["Cancer", 3],
       ["Drugs & alcohol abuse", 3],
