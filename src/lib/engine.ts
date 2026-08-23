@@ -206,7 +206,7 @@ export function generateChatReply(
       body = k.mistakes
         .map((m, i) => `${i + 1}. ${m}`)
         .join("\n");
-      return `${header}\n\n## ⚠️ Where students usually go wrong on ${topicName}\n\n${body}\n\n${k.tip ? `\n**Shaishav tip:** ${k.tip}` : ""}\n\nWant a PYQ drill to check yourself? Type “quiz”.`;
+      return `${header}\n\n## ⚠️ Where students usually go wrong on ${topicName}\n\n${body}\n\n${k.tip ? `\n**One AI tip:** ${k.tip}` : ""}\n\nWant a PYQ drill to check yourself? Type “quiz”.`;
     case "pyq":
       return buildPyqDrill(r, k, topicName);
     case "example":

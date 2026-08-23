@@ -408,7 +408,7 @@ function TopicTool({
               <Loader2 className="size-5 animate-spin" />
             </span>
           </div>
-          <p className="text-sm font-semibold">Shaishav is working on it…</p>
+          <p className="text-sm font-semibold">One AI is working on it…</p>
           <p className="max-w-sm text-xs text-muted-foreground">
             Building this from the NCERT chapter context and PYQ patterns —
             fully offline, no API.
@@ -443,7 +443,7 @@ function TopicTool({
           <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
             {getToolDef(tool).description}. Hit{" "}
             <span className="font-semibold text-foreground">Generate</span> and
-            Shaishav creates it instantly from the chapter knowledge + PYQ
+            One AI creates it instantly from the chapter knowledge + PYQ
             bank — no internet, no API key.
           </p>
         </div>

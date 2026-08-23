@@ -92,7 +92,7 @@ export function AppShell({
       const def = TOOL_DEFS.find((t) => t.id === id);
       return def?.label ?? "Tools";
     }
-    return "Shaishav One AI";
+    return "One AI";
   }, [location.pathname]);
 
   const handleSwitchStream = async (id: StreamId) => {
@@ -159,7 +159,7 @@ export function AppShell({
         {!collapsed && (
           <div className="min-w-0">
             <p className="truncate text-[13.5px] font-bold leading-tight">
-              Shaishav One AI
+              One AI
             </p>
             <p className="truncate text-[11px] text-muted-foreground">
               {streamDef.name} · Class {classLevel}

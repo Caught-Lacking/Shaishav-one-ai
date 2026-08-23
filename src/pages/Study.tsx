@@ -319,7 +319,7 @@ export default function Study() {
     } catch (error) {
       console.error("Generate error:", error);
       toast.error(
-        "Something went wrong while asking Shaishav. Please try again.",
+        "Something went wrong while asking One AI. Please try again.",
       );
     } finally {
       setIsGenerating(false);
@@ -949,7 +949,7 @@ export default function Study() {
                         {m.role === "assistant" ? (
                           <>
                             <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-teal-600">
-                              <Bot className="size-3.5" /> Shaishav AI
+                              <Bot className="size-3.5" /> One AI
                             </p>
                             <Markdown content={m.content} />
                           </>
@@ -966,8 +966,7 @@ export default function Study() {
                     <div className="flex justify-start">
                       <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-border bg-card px-4 py-3 shadow-sm">
                         <Loader2 className="size-4 animate-spin text-teal-600" />
-                        <span className="text-[13px] font-medium text-muted-foreground">
-                          Shaishav is explaining…
+                        <span className="text-[13px] font-medium text-muted-foreground">                              One AI is explaining…
                         </span>
                       </div>
                     </div>

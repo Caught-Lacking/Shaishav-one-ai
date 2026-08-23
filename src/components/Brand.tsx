@@ -13,7 +13,7 @@ export function BrandMark({
   return (
     <img
       src={logo}
-      alt="Shaishav One AI logo"
+      alt="One AI logo"
       width={64}
       height={64}
       className={cn(
@@ -44,7 +44,7 @@ export function Brand({
             nameClassName,
           )}
         >
-          Shaishav One <span className="text-teal-600">AI</span>
+          One <span className="text-teal-600">AI</span>
         </p>
         <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           NEET · JEE study notebook

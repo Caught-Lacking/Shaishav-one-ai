@@ -158,7 +158,7 @@ export function ToolPanel({
               Generating your {def.label.toLowerCase()}…
             </p>
             <p className="max-w-sm text-xs text-muted-foreground">
-              Shaishav is building this from the NCERT chapter context and PYQ
+              One AI is building this from the NCERT chapter context and PYQ
               patterns for {topicName}.
             </p>
           </div>
@@ -194,7 +194,7 @@ export function ToolPanel({
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {def.description}. Hit{" "}
               <span className="font-semibold text-foreground">Generate</span>{" "}
-              and Shaishav will create it from the NCERT chapter + PYQ context
+              and One AI will create it from the NCERT chapter + PYQ context
               — it's saved to your notebook automatically.
             </p>
           </div>
