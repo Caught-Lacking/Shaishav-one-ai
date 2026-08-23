@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 
 /**
  * Full-screen brand splash shown for ~3 seconds on app load.
- * No logo — just the "Shaishav One AI" wordmark with a progress bar,
- * then it fades into the stream picker / app.
+ * No logo — just the "Shaishav One AI" wordmark with rotating rings
+ * and a progress bar, then it fades into the stream picker / app.
  */
 export function SplashScreen() {
   return (
@@ -36,18 +36,31 @@ export function SplashScreen() {
           NEET · JEE · NCERT study notebook
         </motion.p>
 
-        {/* wordmark — no logo image, just the name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-          className="mt-4 text-center font-display text-4xl font-bold tracking-tight sm:text-5xl"
-        >
-          <span className="text-white">Shaishav</span>{" "}
-          <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-amber-600 bg-clip-text text-transparent">
-            One AI
-          </span>
-        </motion.h1>
+        {/* wordmark with rotating rings */}
+        <div className="relative mt-6 flex items-center justify-center">
+          {/* outer ring */}
+          <span className="ring-spin absolute size-28 rounded-full border border-dashed border-amber-400/25 sm:size-32" />
+          {/* middle ring */}
+          <span className="ring-spin-reverse absolute size-20 rounded-full border border-violet-400/20 sm:size-24" />
+          {/* inner glow dot */}
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 1.1, 1] }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            className="absolute size-2 rounded-full bg-amber-400/60"
+          />
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+            className="text-center font-display text-4xl font-bold tracking-tight sm:text-5xl"
+          >
+            <span className="text-white">Shaishav</span>{" "}
+            <span className="bg-gradient-to-r from-amber-300 via-amber-400 to-amber-600 bg-clip-text text-transparent">
+              One AI
+            </span>
+          </motion.h1>
+        </div>
 
         {/* progress bar */}
         <div className="mt-10 h-1 w-56 overflow-hidden rounded-full bg-white/10 sm:w-64">

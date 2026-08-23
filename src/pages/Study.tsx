@@ -4,6 +4,7 @@ import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { AppShell } from "@/components/AppShell";
+import { PageTransition } from "@/components/PageTransition";
 import { StreamPicker } from "@/components/StreamPicker";
 import { Markdown } from "@/components/Markdown";
 import { ToolPanel } from "@/components/ToolPanel";
@@ -356,6 +357,7 @@ export default function Study() {
 
   return (
     <AppShell stream={stream}>
+      <PageTransition>
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:h-[calc(100dvh-6rem)] lg:flex-row">
         {/* ============================ SYLLABUS ============================ */}
         <aside
@@ -1020,6 +1022,7 @@ export default function Study() {
           )}
         </div>
       </div>
+      </PageTransition>
     </AppShell>
   );
 }

@@ -4,6 +4,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { AppShell } from "@/components/AppShell";
 import { StreamPicker } from "@/components/StreamPicker";
+import { PageTransition } from "@/components/PageTransition";
 import { useAuth } from "@/hooks/use-auth";
 import { useStream } from "@/hooks/use-stream";
 import { useClassLevel } from "@/hooks/use-class-level";
@@ -71,6 +72,7 @@ export default function Dashboard() {
 
   return (
     <AppShell stream={stream}>
+      <PageTransition>
       <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
         {/* greeting */}
         <div className="flex items-center gap-2 text-[13px] font-semibold text-violet-600">
@@ -206,6 +208,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      </PageTransition>
     </AppShell>
   );
 }

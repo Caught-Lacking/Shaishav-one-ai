@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { AppShell } from "@/components/AppShell";
+import { PageTransition } from "@/components/PageTransition";
 import { StreamPicker } from "@/components/StreamPicker";
 import { FlashcardsView, QuizView } from "@/components/ToolViews";
 import { Markdown } from "@/components/Markdown";
@@ -153,6 +154,7 @@ export default function ToolPage() {
 
   return (
     <AppShell stream={stream}>
+      <PageTransition>
       <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6">
         {/* header */}
         <div className="flex flex-wrap items-center gap-3">
@@ -198,6 +200,7 @@ export default function ToolPage() {
           )}
         </div>
       </div>
+      </PageTransition>
     </AppShell>
   );
 }
