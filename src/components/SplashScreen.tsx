@@ -24,6 +24,14 @@ export function SplashScreen() {
             "radial-gradient(ellipse 60% 50% at 50% 42%, rgba(80,105,220,0.28), transparent 70%)",
         }}
       />
+      {/* secondary glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(circle at 30% 70%, rgba(200,160,60,0.12), transparent 40%), radial-gradient(circle at 70% 30%, rgba(100,120,240,0.12), transparent 40%)",
+        }}
+      />
 
       <div className="relative z-10 flex flex-col items-center px-6">
         {/* small tagline */}
@@ -35,6 +43,20 @@ export function SplashScreen() {
         >
           NEET · JEE · NCERT study notebook
         </motion.p>
+        {/* decorative floating dots */}
+        {[...Array(6)].map((_, i) => (
+          <motion.span
+            key={i}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.5, 0] }}
+            transition={{ duration: 3, delay: 0.3 + i * 0.3, repeat: Infinity, repeatDelay: 1 }}
+            className="absolute size-1 rounded-full bg-amber-400/40"
+            style={{
+              left: `${15 + i * 14}%`,
+              top: `${20 + (i % 3) * 25}%`,
+            }}
+          />
+        ))}
 
         {/* wordmark with rotating rings */}
         <div className="relative mt-6 flex items-center justify-center">
@@ -78,6 +100,17 @@ export function SplashScreen() {
         >
           Loading your study notebook…
         </motion.p>
+        {/* loading shimmer dots */}
+        <div className="mt-4 flex items-center gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <motion.span
+              key={i}
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, delay: i * 0.2, repeat: Infinity }}
+              className="size-1.5 rounded-full bg-amber-400/70"
+            />
+          ))}
+        </div>
       </div>
     </motion.div>
   );

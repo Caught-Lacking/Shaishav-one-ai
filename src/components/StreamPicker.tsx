@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Atom, Stethoscope, Wrench } from "lucide-react";
+import { ArrowRight, Atom, BookOpen, GraduationCap, Stethoscope, Wrench } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Brand } from "@/components/Brand";
 import { cn } from "@/lib/utils";
-import { getStreamSubjects, streams, type StreamId } from "@/lib/curriculum";
+import { countStreamPyqs, getStreamSubjects, streams, type StreamId } from "@/lib/curriculum"
 
 function PickCard({
   streamId,
@@ -139,11 +139,32 @@ export function StreamPicker({
           <PickCard streamId="jee" onPick={handlePick} delay={0.32} />
         </div>
 
+        {/* floating stats row */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.48, duration: 0.5 }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-4"
+        >
+          <div className="flex items-center gap-1.5 rounded-full border border-border bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-muted-foreground backdrop-blur-sm">
+            <BookOpen className="size-3 text-violet-500" />
+            Full NCERT syllabus
+          </div>
+          <div className="flex items-center gap-1.5 rounded-full border border-border bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-muted-foreground backdrop-blur-sm">
+            <GraduationCap className="size-3 text-teal-500" />
+            PYQ-mapped chapters
+          </div>
+          <div className="flex items-center gap-1.5 rounded-full border border-border bg-white/80 px-3 py-1.5 text-[11px] font-semibold text-muted-foreground backdrop-blur-sm">
+            <Stethoscope className="size-3 text-amber-500" />
+            AI-powered study
+          </div>
+        </motion.div>
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="mt-10 text-center text-xs text-muted-foreground"
+          transition={{ delay: 0.55, duration: 0.6 }}
+          className="mt-6 text-center text-xs text-muted-foreground"
         >
           You can switch tracks anytime from the sidebar.
         </motion.p>
